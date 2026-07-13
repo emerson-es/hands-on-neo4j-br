@@ -38,4 +38,3 @@ Dados de linhas e estações levantados via busca na web em julho de 2026 (Metr�
 ## Limitações e avisos importantes
 
 - **Tempo e distância dos trechos são estimativas ilustrativas**, calculadas a partir da extensão oficial da linha (quando conhecida) e de velocidades comerciais médias por modal — não são o horário oficial de nenhuma concessionária.
-- Este é um projeto de demonstração, não um app de navegação — para informações de viagem reais, use os canais oficiais do Metrô/CPTM.
