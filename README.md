@@ -2,9 +2,6 @@
 
 Modelo de grafo (Neo4j/Cypher) da rede de Metrô + CPTM de São Paulo, criado para demonstrar o potencial de bancos de dados em grafo em um problema real de mobilidade urbana: menor rota, rota mais eficiente, pontos turísticos e simulações de resiliência de rede ("o que acontece se eu fechar tal estação/linha?").
 
-> **Descrição curta (para o campo "About" do repositório):**
-> Modelo de grafo (Neo4j) da malha de metrô/trem de São Paulo — rotas, pontos turísticos e simulações de fechamento de estações/linhas, demonstrando na prática o poder de grafos em mobilidade urbana.
-
 ## Índice
 
 - [Por que grafo](#por-que-grafo)
