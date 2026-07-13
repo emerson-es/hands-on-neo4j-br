@@ -2,11 +2,14 @@
 
 Modelo de grafo (Neo4j/Cypher) da rede de Metrô + CPTM de São Paulo, criado para demonstrar o potencial de bancos de dados em grafo em um problema real de mobilidade urbana: menor rota, rota mais eficiente, pontos turísticos e simulações de resiliência de rede ("o que acontece se eu fechar tal estação/linha?").
 
+<img width="2024" height="1136" alt="Linhas" src="https://github.com/user-attachments/assets/6a143aa9-f32f-400d-ad87-ad62d900a88f" />
+
 ## Por que grafo
 
 Uma malha de transporte é, por natureza, uma rede de nós (estações) e arestas (trechos). Perguntas como "qual a menor rota", "qual a rota mais rápida" ou "o que acontece se essa linha fechar" são, matematicamente, buscas de caminho mínimo e análises de conectividade em grafo. Em SQL, isso normalmente exige *joins* recursivos custosos e uma consulta nova para cada cenário. Em Cypher é uma travessia nativa — o mesmo padrão de consulta resolve interdição de uma linha ou "quais pontos turísticos dá para visitar com no máximo 2 baldeações", apenas trocando o filtro.
 
 ## Modelo de dados
+
 
 ```mermaid
 graph LR
