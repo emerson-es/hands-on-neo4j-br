@@ -91,7 +91,7 @@ RETURN trechos_hoje, [n IN nodes(caminho_hoje) | n.nome] AS estacoes_caminho_hoj
 ```
 
 ```cypher
-// Visualizando o resultado da simulação em Grafo sem Estaçã St Cecilia
+// Visualizando o resultado da simulação em Grafo sem Estação St Cecilia
 MATCH (origem:Estacao {nome: "Jabaquara"}), (destino:Estacao {nome: "Palmeiras-Barra Funda"})
 MATCH caminho_hoje = shortestPath((origem)-[:CONECTA*]-(destino))
 WITH origem, destino, length(caminho_hoje) AS trechos_hoje, caminho_hoje
