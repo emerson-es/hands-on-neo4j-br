@@ -84,7 +84,7 @@ MATCH (origem:Estacao {nome: "Jabaquara"}), (destino:Estacao {nome: "Palmeiras-B
 MATCH caminho_hoje = shortestPath((origem)-[:CONECTA*]-(destino))
 WITH origem, destino, length(caminho_hoje) AS trechos_hoje, caminho_hoje
 OPTIONAL MATCH caminho_sem_st_cecilia = shortestPath((origem)-[:CONECTA*]-(destino))
-  WHERE NONE(n IN nodes(caminho_sem_st_cecilia) WHERE n.nome = "Santa Cecilia")
+  WHERE NONE(n IN nodes(caminho_sem_st_cecilia) WHERE n.nome = "Santa Cecilia") // Estação Santa Cecilia - Fechada
 RETURN trechos_hoje, [n IN nodes(caminho_hoje) | n.nome] AS estacoes_caminho_hoje,
        CASE WHEN caminho_sem_st_cecilia IS NULL THEN "SEM ROTA POSSIVEL"
             ELSE length(caminho_sem_st_cecilia) END AS trechos_sem_Santa_Cecilia , [n IN nodes(caminho_sem_st_cecilia) | n.nome] AS estacoes_caminho_sem_Santa_Cecilia;
