@@ -13,6 +13,12 @@ MATCH (e:Estacao)-[r:PERTENCE_A]->(l:Linha {nome: "Linha 3-Vermelha"})
 RETURN e.nome AS estacao, r.ordem AS ordem
 ORDER BY r.ordem;
 ```
+
+```cypher
+MATCH path = (e:Estacao)-[r:PERTENCE_A]->(l:Linha {nome: "Linha 3-Vermelha"})
+RETURN path
+```
+
 **Técnica:** `MATCH` com filtro de propriedade direto no nó (`{nome: "..."}`), seguido de `ORDER BY` numa propriedade do relacionamento (`r.ordem`), não do nó. É o padrão mais comum: navegar uma aresta e ordenar pelo atributo que descreve essa navegação.
 
 ### 1.2 Quais linhas passam por uma estação
