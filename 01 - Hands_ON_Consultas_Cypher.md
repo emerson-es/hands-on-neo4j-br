@@ -15,6 +15,7 @@ ORDER BY r.ordem;
 ```
 
 ```cypher
+// Retorna vizualização em Grafo
 MATCH path = (e:Estacao)-[r:PERTENCE_A]->(l:Linha {nome: "Linha 3-Vermelha"})
 RETURN path
 ```
