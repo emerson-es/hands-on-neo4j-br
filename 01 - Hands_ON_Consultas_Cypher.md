@@ -1,6 +1,4 @@
-# Cypher Hands-On: Malha Metroferroviária de SP em 3 níveis
-
-6 consultas testadas direto no banco conectado (via MCP), 2 por nível. Rode na ordem — cada nível assume o vocabulário do anterior.
+# Cypher Hands-On: Malha Metroferroviária de SP
 
 **Schema usado:** `(:Estacao)-[:PERTENCE_A {ordem}]->(:Linha)`, `(:Estacao)-[:CONECTA {linha, distancia_km, tempo_min}]->(:Estacao)`, `(:Estacao)-[:PROXIMO_A_POI]->(:PontoDeInteresse)`.
 
