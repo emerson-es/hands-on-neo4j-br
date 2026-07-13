@@ -73,23 +73,35 @@ LIMIT 5;
 MATCH (origem:Estacao {nome: "Aeroporto-Guarulhos"}), (destino:Estacao {nome: "Congonhas"})
 CALL apoc.algo.dijkstra(origem, destino, "CONECTA>|CONECTA<", "tempo_min")
 YIELD path, weight
-RETURN [n IN nodes(path) | n.nome] AS estacoes, weight AS tempo_total_min;
+RETURN [n IN nodes(path) | n.nome] AS estacoes, weight AS tempo_total_min, path;
 ```
-**Técnica:** `CALL ... YIELD` invoca um procedimento do plugin APOC — sai do Cypher puro e usa uma implementação de Dijkstra pronta. `"CONECTA>|CONECTA<"` diz para percorrer o relacionamento nos dois sentidos; `"tempo_min"` é a propriedade usada como peso. Diferença chave do nível 2: aqui o caminho considera o **custo acumulado**, não o número de saltos. Testado ao vivo: 18 estações, 59 minutos, cruzando 5 linhas diferentes.
+**Técnica:** `CALL ... YIELD` invoca um procedimento do plugin APOC — sai do Cypher puro e usa uma implementação de Dijkstra pronta. `"CONECTA>|CONECTA<"` diz para percorrer o relacionamento nos dois sentidos; `"tempo_min"` é a propriedade usada como peso. Diferença chave do nível 2: aqui o caminho considera o **custo acumulado**, não o número de saltos. Resultado: 18 estações, 59 minutos, cruzando 5 linhas diferentes.
 
 ### 3.2 Simulação "e se essa estação fechar?"
 
 ```cypher
 MATCH (origem:Estacao {nome: "Jabaquara"}), (destino:Estacao {nome: "Palmeiras-Barra Funda"})
-MATCH caminho_hoje = shortestPath((origem)-[:CONECTA*..60]-(destino))
-WITH origem, destino, length(caminho_hoje) AS trechos_hoje
-OPTIONAL MATCH caminho_sem_luz = shortestPath((origem)-[:CONECTA*..60]-(destino))
-  WHERE NONE(n IN nodes(caminho_sem_luz) WHERE n.nome = "Luz")
-RETURN trechos_hoje,
-       CASE WHEN caminho_sem_luz IS NULL THEN "SEM ROTA POSSIVEL"
-            ELSE length(caminho_sem_luz) END AS trechos_sem_luz;
+MATCH caminho_hoje = shortestPath((origem)-[:CONECTA*]-(destino))
+WITH origem, destino, length(caminho_hoje) AS trechos_hoje, caminho_hoje
+OPTIONAL MATCH caminho_sem_st_cecilia = shortestPath((origem)-[:CONECTA*]-(destino))
+  WHERE NONE(n IN nodes(caminho_sem_st_cecilia) WHERE n.nome = "Santa Cecilia")
+RETURN trechos_hoje, [n IN nodes(caminho_hoje) | n.nome] AS estacoes_caminho_hoje,
+       CASE WHEN caminho_sem_st_cecilia IS NULL THEN "SEM ROTA POSSIVEL"
+            ELSE length(caminho_sem_st_cecilia) END AS trechos_sem_Santa_Cecilia , [n IN nodes(caminho_sem_st_cecilia) | n.nome] AS estacoes_caminho_sem_Santa_Cecilia;
 ```
-**Técnica:** três coisas combinadas — `WHERE NONE(n IN nodes(caminho) WHERE ...)` filtra nós de dentro do próprio caminho (exclui a estação "fechada" da busca, sem apagar nada do banco); `OPTIONAL MATCH` garante que a query não quebra quando não existe mais rota alguma; `CASE WHEN` trata esse "sem rota" no retorno. Testado ao vivo: fechar Luz faz a rota Jabaquara→Palmeiras-Barra Funda ir de 16 para 17 trechos (desvia por Sé). Essa é a técnica por trás de qualquer simulação de resiliência de rede sem precisar de plugin de grafo.
+
+```cypher
+// Visualizando o resultado da simulação em Grafo sem Estaçã St Cecilia
+MATCH (origem:Estacao {nome: "Jabaquara"}), (destino:Estacao {nome: "Palmeiras-Barra Funda"})
+MATCH caminho_hoje = shortestPath((origem)-[:CONECTA*]-(destino))
+WITH origem, destino, length(caminho_hoje) AS trechos_hoje, caminho_hoje
+OPTIONAL MATCH caminho_sem_st_cecilia = shortestPath((origem)-[:CONECTA*]-(destino))
+  WHERE NONE(n IN nodes(caminho_sem_st_cecilia) WHERE n.nome = "Santa Cecilia")
+RETURN caminho_sem_st_cecilia;
+
+```
+
+**Técnica:** três coisas combinadas — `WHERE NONE(n IN nodes(caminho) WHERE ...)` filtra nós de dentro do próprio caminho (exclui a estação "fechada" da busca, sem apagar nada do banco); `OPTIONAL MATCH` garante que a query não quebra quando não existe mais rota alguma; `CASE WHEN` trata esse "sem rota" no retorno. Resultado: fechar Santa Cecilia faz a rota Jabaquara→Palmeiras-Barra Funda ir de 16 para 20 trechos. Essa é a técnica por trás de qualquer simulação de resiliência de rede sem precisar de plugin de grafo.
 
 ---
 
