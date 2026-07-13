@@ -41,6 +41,14 @@ MATCH (origem:Estacao {nome: "Tucuruvi"}), (destino:Estacao {nome: "Jabaquara"})
 MATCH caminho = shortestPath((origem)-[:CONECTA*..60]-(destino))
 RETURN [n IN nodes(caminho) | n.nome] AS estacoes, length(caminho) AS trechos;
 ```
+
+```cypher
+// Retorna menor Rota em Grafo
+MATCH (origem:Estacao {nome: "Tucuruvi"}), (destino:Estacao {nome: "Jabaquara"})
+MATCH caminho = shortestPath((origem)-[:CONECTA*..60]-(destino))
+RETURN caminho;
+```
+
 **Técnica:** `shortestPath()` sobre um padrão de comprimento variável (`*..60` = até 60 saltos). `nodes(caminho)` extrai os nós do caminho encontrado; `length(caminho)` conta os relacionamentos. Testado ao vivo: entre Tucuruvi e Jabaquara o algoritmo encontra uma rota de 20 trechos passando por 4 linhas diferentes (L1→L11→L10→L2→L5) — **mais curta em saltos do que ficar numa linha só**. Prova prática de que "menor caminho" ≠ "caminho mais óbvio".
 
 ### 2.2 Ranking de estações-hub
